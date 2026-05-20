@@ -1,155 +1,153 @@
-# Captioner & Reasoner: Multimodal Problem Solver Pipeline
+<div align="center">
 
+# SciReasoner
 
+### Multimodal Reasoning for Science
 
-This repository contains a sophisticated, multi-stage pipeline for solving physics problems that involve both text and images. The core strategy is to decompose the complex task of problem-solving into distinct stages: first, understanding and describing the problem in a structured way, and then reasoning through that description to find a solution.
+**🥇 1st Place Winner — ICML 2025 AI for Math Workshop, Track 2: Physics Reasoning with Diagrams and Expressions**
 
-This workflow employs a powerful **Describe-Answer-Critique & Refine** model:
+[![Paper](https://img.shields.io/badge/arXiv-2509.06079-b31b1b.svg)](https://arxiv.org/abs/2509.06079)
+[![License](https://img.shields.io/badge/License-GPL_3.0-blue.svg)](LICENSE)
+[![ICML 2025](https://img.shields.io/badge/ICML_2025-AI4Math_Workshop-7B68EE.svg)](https://sites.google.com/view/ai4mathworkshopicml2025)
+[![SeePhys Pro](https://img.shields.io/badge/SeePhys_Pro-Codabench_16010-success.svg)](https://www.codabench.org/competitions/16010/)
 
-1. **Generate Descriptions (`caption.py`):** An AI model analyzes the problem and generates a detailed, structured textual description.
-2. **Generate Initial Solution (`answer.py`, 1st pass):** A second AI prompt uses the structured description to generate a preliminary answer.
-3. **Critique & Refine Solution (`answer.py`, 2nd pass):** A third AI prompt acts as an expert critic, reviewing the initial solution for errors and providing a corrected, final answer.
+<img src="assets/certificate.jpg" alt="ICML 2025 AI4Math First Place Certificate" width="720"/>
 
+</div>
 
+---
 
-## Workflow Overview
+## 📖 Overview
 
+**SciReasoner** is the codebase behind our **first-place solution** to the ICML 2025 AI for Math Workshop's *Physics Reasoning with Diagrams and Expressions* challenge (the original **SeePhys** benchmark), and the active development tree for the 2026 **SeePhys Pro** edition (Codabench competition 16010).
 
-
-The process relies on a chain of scripts and data files:
+The system implements a **Describe → Answer → Critique & Refine** pipeline that decomposes multimodal physics problem solving into specialized stages:
 
 ```
-[total.json] --> python caption.py --> [total_caption.json] --> python answer.py (Pass 1) --> [prediction.json] --> (Manual Edit) --> python answer.py (Pass 2) --> [final_prediction.json]
+┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+│ Caption  │───▶│  Reason  │───▶│  Critic  │───▶│  Refine  │
+│ (image)  │    │  (solve) │    │ (review) │    │ (audit)  │
+└──────────┘    └──────────┘    └──────────┘    └──────────┘
 ```
 
+Each stage uses a strong vision-language model (Gemini-3.1-Pro by default) and is independently cached, retryable, and ablatable.
 
+## 📑 Paper
 
-## Prerequisites
+> **Multimodal Reasoning for Science: Technical Report and 1st Place Solution to the ICML 2025 SeePhys Challenge**
+> Hao Liang, Ruitao Wu, Bohan Zeng, Junbo Niu, Wentao Zhang, Bin Dong
+> arXiv: [2509.06079](https://arxiv.org/abs/2509.06079) (2025)
 
+```bibtex
+@article{liang2025multimodal,
+  title  = {Multimodal Reasoning for Science: Technical Report and 1st Place
+            Solution to the ICML 2025 SeePhys Challenge},
+  author = {Liang, Hao and Wu, Ruitao and Zeng, Bohan and Niu, Junbo
+            and Zhang, Wentao and Dong, Bin},
+  journal= {arXiv preprint arXiv:2509.06079},
+  year   = {2025}
+}
+```
 
+## 🏆 Results
 
-1. **Python 3**: Ensure you have a working Python 3 environment.
+### ICML 2025 — SeePhys Challenge (final ranking)
 
-2. **Required Libraries**: Install the necessary Python libraries.
+| Rank | Method                              | Score |
+|:----:|:------------------------------------|:-----:|
+| 🥇 1 | **SciReasoner (ours)**              | best |
 
-   ```bash
-   pip install openai tqdm
-   ```
+### 2026 — SeePhys Pro (Codabench 16010, public testmini, ongoing)
 
-3. **API Key**: This pipeline requires an API key from a provider like OpenAI. You must set your credentials within each script (`caption.py` and `answer.py`).
+Iteration log lives in [`seephys_pro_codabench/output/submissions/README.md`](seephys_pro_codabench/output/submissions/README.md). Highlights so far:
 
-   ```python
-   # Inside both answer.py and caption.py
-   client = OpenAI(
-       base_url="YOUR_API_BASE_URL", # Or leave empty
-       api_key="YOUR_API_KEY",      # Replace with your actual key
-   )
-   ```
+| #  | Submission                       | Overall  | L1    | L2    | L3    | L4    | L5    | Note |
+|---:|:---------------------------------|:--------:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----|
+|  1 | `sub_001_gemini_baseline`        | 0.7651   | 0.770 | 0.810 | 0.755 | 0.700 | 0.933 | pure Gemini-3.1-Pro 3-stage |
+|  4 | `sub_004_l4_recaption`           | 0.7747   | 0.765 | 0.810 | 0.760 | 0.740 | 0.933 | L4-specific verbatim-OCR caption (+7q) |
+|  8 | **`sub_008_l1_fewshot`**         | **0.7771** | **0.770** | 0.800 | 0.765 | 0.750 | 0.933 | L1 reason prompt with worked examples |
 
-   
+Each submission folder contains the full `submission.zip`, `prediction.csv`, the Codabench `scoring_result.zip`, and a `notes.md` with config + lessons.
 
-## Step-by-Step Instructions
+## 🗂 Repository Structure
 
+```
+SciReasoner/
+├── caption.py                          # Original 2025 caption stage (single-model)
+├── answer.py                           # Original 2025 answer/critic stage (single-model)
+├── README.md
+├── LICENSE
+├── assets/
+│   └── certificate.jpg                 # ICML 2025 First Place certificate
+└── seephys_pro_codabench/              # 2026 SeePhys Pro iteration
+    ├── scripts/
+    │   ├── run_v2.py                   # Main 3-stage pipeline (caption→reason→critic)
+    │   ├── audit_fix.py                # Deterministic post-processing
+    │   ├── run_baseline.py             # Single-stage baseline
+    │   └── run_jury.py                 # Heterogeneous-juror voting (ablation)
+    └── output/
+        └── submissions/
+            ├── README.md               # Submission index + lessons
+            └── sub_NNN_<tag>/          # Per-submission notes + artifacts
+```
 
+## 🚀 Quick Start (2026 SeePhys Pro pipeline)
 
-Follow these three stages to get the final, refined answers.
+### 1. Install
 
+```bash
+pip install openai pandas pyarrow tqdm
+```
 
+### 2. Download the dataset
 
-### Stage 1: Generate Structured Descriptions
+```bash
+hf download Kun-Xiang/SeePhysPro --repo-type dataset --local-dir ./data/SeePhysPro
+```
 
+### 3. Run the 3-stage pipeline
 
+```bash
+export OPENAI_API_KEY=<your-gemini-3.1-pro-compatible-key>
+export OPENAI_BASE_URL=<your-endpoint>           # optional, e.g. an OpenAI-compatible proxy
 
-This stage uses `caption.py` to analyze your problems and create detailed descriptions.
+python seephys_pro_codabench/scripts/run_v2.py \
+    --run v2_pub830 \
+    --split testmini \
+    --levels level1 level2 level3 level4 level5 \
+    --caption-model gemini-3.1-pro-preview \
+    --reason-model gemini-3.1-pro-preview \
+    --critic-model gemini-3.1-pro-preview \
+    --use-critic --k-samples 1 --workers 50
+```
 
-1. **Configure `caption.py`**:
+The pipeline writes per-stage caches under `output/<run>/cache/{caption,reason,critic,final}/<qid>.json`. Crash-resume is automatic — re-run the same command to continue.
 
-   - Ensure `INPUT_JSON_PATH` is set to `'total.json'`.
-   - Ensure `OUTPUT_JSON_PATH` is set to `'total_caption.json'`.
-   - The model is set to `gemini-2.5-pro` by default. You can change `MODEL_NAME` if needed.
+### 4. Audit and package the submission
 
-2. **Run the script**:
+```bash
+python seephys_pro_codabench/scripts/audit_fix.py --run output/v2_pub830
+# Produces: prediction_audited.csv, submission_audited.zip, audit_report.md
+```
 
-   ```bash
-   python caption.py
-   ```
+Upload the resulting `submission_audited.zip` to [Codabench competition 16010](https://www.codabench.org/competitions/16010/).
 
-3. **Output**: A new file, `total_caption.json`, will be created. It contains your original data plus a new `description` field for each problem.
+## 🔬 Pipeline Highlights
 
+| Component | Role | Implementation |
+|:--|:--|:--|
+| **Caption** | Structured figure description (or verbatim OCR for fully-visual problems) | `run_v2.py :: stage_caption()` |
+| **Reason** | Step-by-step physics derivation with optional self-consistency `k>1` | `run_v2.py :: stage_reason()` |
+| **Critic** | Independent senior-physicist review pass; corrects when wrong | `run_v2.py :: stage_critic()` |
+| **Adaptive Routing** | Skip caption when problem text is direct enough (7-domain regex) | `run_v2.py :: route_use_caption()` |
+| **Level-specific Caption Templates** | L4 verbatim-OCR (+7q), L23 hybrid in-image extraction | `L4_CAPTION_USER`, `L23_CAPTION_USER` |
+| **Few-shot Reason** | 3 worked physics examples for L1 (text-only level) | `REASONER_USER_L1_FEWSHOT` |
+| **Audit Layer** | Deterministic fixes (truncation fallback, latex unwrap, multichoice case) | `audit_fix.py` |
 
+## 📜 License
 
-### Stage 2: Generate Initial Answers
+GPL-3.0. See [LICENSE](LICENSE).
 
+## 🙏 Acknowledgements
 
-
-This stage runs `answer.py` in its default mode to generate the first draft of the solutions.
-
-1. **Configure `answer.py`**:
-
-   - Ensure `INPUT_JSON_PATH` is set to `'total_caption.json'`.
-   - Ensure `OUTPUT_JSON_PATH` is set to `'prediction.json'`.
-   - By default, the script will use the `build_prompt_answer` function, which prompts the AI to act as a "Physics Problem Solver and Educator".
-
-2. **Run the script**:
-
-   ```bash
-   python answer.py
-   ```
-
-3. **Output**: A new file, `prediction.json`, will be created. It contains the data from the previous step plus a new `prediction` field holding the initial solution.
-
-
-
-### Stage 3: Critique and Refine Answers
-
-
-
-This final stage re-runs `answer.py` in a "critic" mode to review and correct the initial answers. This requires a **manual code modification**.
-
-1. **Manually Edit `answer.py`**:
-
-   - Change the input and output file paths to avoid overwriting your data. For example:
-
-     ```python
-     # In answer.py
-     INPUT_JSON_PATH = 'prediction.json'
-     OUTPUT_JSON_PATH = 'final_prediction.json' # Use a new name for the final output
-     ```
-
-   - Modify the `process_item` function to call `build_prompt_critic` instead of `build_prompt_answer`. This changes the AI's role to an expert reviewer.
-
-     **Before modification:**
-
-     ```python
-     # Inside the process_item function in answer.py
-     prompt = build_prompt_answer(item) 
-     ```
-
-     **After modification:**
-
-     ```python
-     # Inside the process_item function in answer.py
-     prompt = build_prompt_critic(item)
-     ```
-
-2. **Run the modified script**:
-
-   ```bash
-   python answer.py
-   ```
-
-3. **Final Output**: The file `final_prediction.json` (or your chosen output name) will be generated. The `prediction` field in this file will contain the critiqued and potentially corrected final answer, including an explanation if the initial solution was wrong.
-
-
-
-## Configuration
-
-
-
-You can adjust the performance of the scripts by changing the constants at the bottom of each file:
-
-- `MAX_CONCURRENT_WORKERS`: The number of parallel threads to run for processing.
-- `INPUT_JSON_PATH`: The source data file.
-- `OUTPUT_JSON_PATH`: The destination for the results.
-- `IMAGE_ROOT_DIR`: The directory where images are stored.
-- `MODEL_NAME`: The specific AI model to be used for the task.
+Thanks to the organizers of the [ICML 2025 AI for Math Workshop](https://sites.google.com/view/ai4mathworkshopicml2025) and the SeePhys / SeePhys Pro challenge for hosting the benchmark, and to AWS / Codabench for compute and infrastructure support.
