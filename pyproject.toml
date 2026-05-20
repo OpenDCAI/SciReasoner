@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scireasoner"
+version = "0.1.0"
+description = "Multimodal physics problem solving — 1st place solution to the ICML 2025 SeePhys Challenge."
+readme = "README.md"
+license = { text = "GPL-3.0-or-later" }
+requires-python = ">=3.10"
+authors = [
+    { name = "Hao Liang" },
+    { name = "Ruitao Wu" },
+    { name = "Bohan Zeng" },
+    { name = "Junbo Niu" },
+    { name = "Wentao Zhang" },
+    { name = "Bin Dong" },
+]
+keywords = ["physics", "multimodal", "reasoning", "icml", "seephys", "ai4math"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "openai>=1.30",
+    "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+batch = [
+    "pandas>=2.0",
+    "pyarrow>=14.0",
+]
+mcp = [
+    "mcp>=1.0",
+]
+dev = [
+    "pytest>=7",
+]
+
+[project.urls]
+Homepage = "https://github.com/OpenDCAI/SciReasoner"
+Paper = "https://arxiv.org/abs/2509.06079"
+Issues = "https://github.com/OpenDCAI/SciReasoner/issues"
+
+[project.scripts]
+scireasoner = "scireasoner.cli:main"
+scireasoner-mcp = "scireasoner.mcp_server:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["scireasoner*"]

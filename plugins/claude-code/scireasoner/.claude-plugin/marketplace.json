@@ -1,0 +1,15 @@
+{
+  "name": "scireasoner",
+  "owner": {
+    "name": "OpenDCAI / SciReasoner contributors",
+    "email": ""
+  },
+  "description": "SciReasoner plugin for Claude Code — multimodal physics problem solving.",
+  "plugins": [
+    {
+      "name": "scireasoner",
+      "source": "./",
+      "description": "Caption → Reason → Critic pipeline for physics problems with figures and equations. 1st place ICML 2025 SeePhys."
+    }
+  ]
+}

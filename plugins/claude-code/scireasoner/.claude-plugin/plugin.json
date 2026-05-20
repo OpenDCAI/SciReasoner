@@ -1,0 +1,23 @@
+{
+  "name": "scireasoner",
+  "version": "0.1.0",
+  "description": "SciReasoner — multimodal physics problem solving (1st place ICML 2025 SeePhys).",
+  "author": {
+    "name": "SciReasoner contributors",
+    "url": "https://github.com/OpenDCAI/SciReasoner"
+  },
+  "homepage": "https://github.com/OpenDCAI/SciReasoner",
+  "repository": "https://github.com/OpenDCAI/SciReasoner",
+  "license": "GPL-3.0-or-later",
+  "keywords": [
+    "physics",
+    "multimodal",
+    "reasoning",
+    "icml-2025",
+    "seephys",
+    "ai4math",
+    "claude-code"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.claude-plugin/mcp.json"
+}

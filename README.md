@@ -77,9 +77,19 @@ SciReasoner/
 ├── answer.py                           # Original 2025 answer/critic stage (single-model)
 ├── README.md
 ├── LICENSE
+├── pyproject.toml                      # pip-installable scireasoner package
 ├── assets/
 │   └── certificate.jpg                 # ICML 2025 First Place certificate
-└── seephys_pro_codabench/              # 2026 SeePhys Pro iteration
+├── scireasoner/                        # Public Python API + CLI + MCP server
+│   ├── pipeline.py                     # Thin shell over the live competition pipeline
+│   ├── cli.py                          # `scireasoner solve|caption ...`
+│   └── mcp_server.py                   # `scireasoner-mcp` (stdio MCP)
+├── plugins/                            # One-click installs for AI agents
+│   ├── claude-code/scireasoner/        # Claude Code plugin (install.sh + skill)
+│   └── codex/scireasoner/              # Codex plugin (install.sh + skill)
+├── tests/
+│   └── test_pipeline.py                # Offline smoke tests (no API calls)
+└── seephys_pro_codabench/              # 2026 SeePhys Pro live iteration
     ├── scripts/
     │   ├── run_v2.py                   # Main 3-stage pipeline (caption→reason→critic)
     │   ├── audit_fix.py                # Deterministic post-processing
@@ -91,12 +101,73 @@ SciReasoner/
             └── sub_NNN_<tag>/          # Per-submission notes + artifacts
 ```
 
-## 🚀 Quick Start (2026 SeePhys Pro pipeline)
+> **Design**: `scireasoner/` is a **thin shell** over `seephys_pro_codabench/scripts/run_v2.py`.
+> When the SciReasoner authors push prompt or strategy improvements during the
+> live SeePhys Pro competition, downstream users automatically get them — just
+> `git pull` and (for plugins) re-run `bash install.sh --force`.
 
-### 1. Install
+## ⚡ Use it in 60 seconds
+
+### As a CLI
 
 ```bash
-pip install openai pandas pyarrow tqdm
+git clone https://github.com/OpenDCAI/SciReasoner.git
+cd SciReasoner
+pip install -e .
+
+export OPENAI_API_KEY=<your-key>
+export OPENAI_BASE_URL=<your-endpoint>      # optional, OpenAI-compatible proxy
+
+scireasoner solve --problem "A 2 kg block slides from rest down a 30° incline of length 5 m, μ = √3/10, g = 10 m/s². Find the speed at the bottom."
+
+# Or with a figure:
+scireasoner solve --problem "Find I(t) in this circuit." --image figure.png
+
+# Pipe via stdin:
+cat problem.txt | scireasoner solve --image figure.png --json
+```
+
+### As a Python library
+
+```python
+from scireasoner import solve
+
+res = solve(
+    problem="A capacitor C is charged to V0, then discharged through R. Time for energy to drop to U0/4?",
+)
+print(res.answer)        # → "RC \\ln 2"
+print(res.reasoning)     # → full chain of reasoning
+```
+
+### Inside Claude Code
+
+```bash
+cd plugins/claude-code/scireasoner
+bash install.sh
+# Restart Claude Code; verify with: claude mcp list
+```
+
+The plugin exposes three MCP tools (`scireasoner_solve` / `_caption` / `_reason`) and
+auto-triggers a `solve-physics-problem` skill when the user asks Claude to solve a
+physics problem with a figure. See [`plugins/claude-code/scireasoner/README.md`](plugins/claude-code/scireasoner/README.md).
+
+### Inside Codex
+
+```bash
+cd plugins/codex/scireasoner
+bash install.sh
+# Restart Codex (Cmd+Q, reopen)
+```
+
+Same three MCP tools and skill, integrated into Codex's plugin marketplace. See
+[`plugins/codex/scireasoner/README.md`](plugins/codex/scireasoner/README.md).
+
+## 🧪 Reproduce SeePhys Pro 2026 results
+
+### 1. Install with batch extras
+
+```bash
+pip install -e ".[batch]"
 ```
 
 ### 2. Download the dataset

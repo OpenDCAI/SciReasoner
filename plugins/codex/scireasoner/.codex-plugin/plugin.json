@@ -1,0 +1,41 @@
+{
+  "name": "scireasoner",
+  "version": "0.1.0",
+  "description": "One-click Codex plugin for the SciReasoner physics-problem solver. 1st place ICML 2025 SeePhys.",
+  "author": {
+    "name": "SciReasoner contributors",
+    "url": "https://github.com/OpenDCAI/SciReasoner"
+  },
+  "homepage": "https://github.com/OpenDCAI/SciReasoner",
+  "repository": "https://github.com/OpenDCAI/SciReasoner",
+  "license": "GPL-3.0-or-later",
+  "keywords": [
+    "physics",
+    "multimodal",
+    "reasoning",
+    "icml-2025",
+    "seephys",
+    "ai4math",
+    "codex"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "SciReasoner",
+    "shortDescription": "Multimodal physics problem solver — caption→reason→critic.",
+    "longDescription": "SciReasoner connects Codex to a three-stage multimodal physics pipeline: a structured-caption stage describes any figure in detail, a reason stage produces a step-by-step derivation grounded on both text and caption, and a critic stage independently verifies the derivation and corrects errors. The same codebase placed first in the ICML 2025 SeePhys Challenge.",
+    "developerName": "SciReasoner contributors",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read"
+    ],
+    "websiteURL": "https://github.com/OpenDCAI/SciReasoner",
+    "defaultPrompt": [
+      "Use SciReasoner to solve this physics problem:",
+      "Use SciReasoner to caption this figure:",
+      "Use SciReasoner with k_samples=3 to solve:"
+    ],
+    "brandColor": "#7B68EE"
+  }
+}

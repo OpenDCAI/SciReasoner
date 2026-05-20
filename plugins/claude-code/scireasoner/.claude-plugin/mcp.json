@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "scireasoner": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/src/run_scireasoner_mcp.sh",
+      "args": [],
+      "cwd": "${CLAUDE_PLUGIN_ROOT}"
+    }
+  }
+}

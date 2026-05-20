@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# Plugin venvs
+plugins/*/scireasoner/vendor/
+*.venv/
+.venv/
+
+# macOS
+.DS_Store
+
+# Local SeePhys Pro caches and outputs (the active competition workspace
+# generates large per-stage caches that should not be committed; only the
+# documented submission folders under output/submissions/ are tracked).
+seephys_pro_codabench/output/v2_*/cache*/
+seephys_pro_codabench/output/v2_*/cache_backup_*/
+seephys_pro_codabench/data/

@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "scireasoner": {
+      "command": "./src/run_scireasoner_mcp.sh",
+      "args": [],
+      "cwd": "."
+    }
+  }
+}
