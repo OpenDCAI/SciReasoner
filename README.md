@@ -8,6 +8,7 @@
 [![License](https://img.shields.io/badge/License-GPL_3.0-blue.svg)](LICENSE)
 [![ICML 2025](https://img.shields.io/badge/ICML_2025-1st_Place-gold.svg)](https://sites.google.com/view/ai4mathworkshopicml2025)
 [![SeePhys Pro](https://img.shields.io/badge/SeePhys_Pro-Codabench_16010-success.svg)](https://www.codabench.org/competitions/16010/)
+[![中关村学院 GitHub 组织](https://img.shields.io/badge/Linked%20to-bjzgcai%20Org-blue?logo=github)](https://github.com/bjzgcai)
 
 🥇 **1st Place — ICML 2025 AI for Math Workshop, Track 2: Physics Reasoning with Diagrams and Expressions**
 
